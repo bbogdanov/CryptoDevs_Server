@@ -43,7 +43,7 @@ class UsersController < ApplicationController
   
   # Setting up strict parameters for when we add account creation.
   def user_params
-    params.require(:user).permit(:username, :email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation)
   end
   
   # Adding a method to check if current_user can update itself. 
