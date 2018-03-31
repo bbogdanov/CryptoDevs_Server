@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 20180331123617) do
   create_table "accounts", force: :cascade do |t|
     t.string "currency_code", null: false
     t.decimal "balance", precision: 30, scale: 18, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.integer "lock_version", default: 0, null: false
     t.string "address"
@@ -27,6 +29,8 @@ ActiveRecord::Schema.define(version: 20180331123617) do
   create_table "transactions", force: :cascade do |t|
     t.string "transaction_code", limit: 10
     t.decimal "amount", precision: 30, scale: 18, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "account_id"
     t.index ["account_id"], name: "index_transactions_on_account_id"
   end

@@ -12,11 +12,22 @@ class User < ApplicationRecord
   validates_presence_of     :email
   validates_uniqueness_of   :email
 
+  after_create :create_account
+
   def can_modify_user?(user_id)
     role == 'admin' || id.to_s == user_id.to_s
   end
 
   def is_admin?
     role == 'admin'
+  end
+
+  private
+
+  def create_account
+    ActiveRecord::Base.transaction do
+      Account.create_btc_account(self)
+      Account.create_eth_account(self)
+    end
   end
 end

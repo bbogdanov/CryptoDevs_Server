@@ -2,6 +2,20 @@ class Account < ApplicationRecord
   belongs_to :user
   has_many :transactions
 
+  def self.create_btc_account(user)
+    acc = Account.new
+    acc.currency_code = 'BTC'
+    acc.user = user
+    acc.save!
+  end
+
+  def self.create_eth_account(user)
+    acc = Account.new
+    acc.currency_code = 'ETH'
+    acc.user = user
+    acc.save!
+  end
+
   def deposit(amount)
     tr = Transaction.new
     tr.transaction_code = 'USRDEP'
