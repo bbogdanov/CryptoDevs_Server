@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # Use Knock to make sure the current_user is authenticated before completing request.
-  before_action :authenticate_user,  only: [:index, :current, :update]
+  before_action :authenticate_user,  only: [:index, :current, :update, :balance]
   before_action :authorize_as_admin, only: [:destroy]
   before_action :authorize,          only: [:update]
 
@@ -36,6 +36,26 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
     if user.destroy
       render json: { status: 200, msg: 'User has been deleted.' }
+    end
+  end
+
+  def balance
+    accounts = Account.where(user_id: current_user.id)
+    response = accounts.map { |acc| { acc.currency_code => acc.balance } }
+    render json: response
+  end
+
+  def transfer
+    # Exctract this into a sidekiq worker
+    user = User.find_by_email(params[:email])
+
+    if user.nil?
+      render json: { status: 404, msg: "User not found!"}
+    else
+      account_sender = Account.where(user_id: current_user.id).where(currency_code: params[:currency_code]).first
+      account_recipient = Account.where(user_id: user.id).where(currency_code: params[:currency_code]).first
+      account_sender.transfer_to(account_recipient.id, params[:amount])
+      render json: account_sender.balance
     end
   end
   

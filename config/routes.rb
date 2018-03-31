@@ -15,4 +15,7 @@ Rails.application.routes.draw do
   post   '/users/create'   => 'users#create'
   patch  '/user/:id'       => 'users#update'
   delete '/user/:id'       => 'users#destroy'
+
+  get '/users/balance', to: 'users#balance'
+  post '/users/transfer', to: 'users#transfer'
 end

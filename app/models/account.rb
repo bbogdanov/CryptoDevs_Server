@@ -17,21 +17,29 @@ class Account < ApplicationRecord
   end
 
   def deposit(amount)
-    tr = Transaction.new
-    tr.transaction_code = 'USRDEP'
-    tr.amount = amount
-    tr.account = self
-    tr.save!
+    ActiveRecord::Base.transaction do
+      tr = Transaction.new
+      tr.transaction_code = 'USRDEP'
+      tr.amount = amount
+      tr.account = self
+      tr.save!
+      self.balance += amount
+      self.save!
+    end
   end
 
   def withdraw(amount)
     raise ArgumentError, 'Insufficient funds' if balance < amount
     
-    tr = Transaction.new
-    tr.transaction_code = 'USRWDR'
-    tr.amount = -amount
-    tr.account = self
-    tr.save!
+    ActiveRecord::Base.transaction do
+      tr = Transaction.new
+      tr.transaction_code = 'USRWDR'
+      tr.amount = -amount
+      tr.account = self
+      tr.save!
+      self.balance -= amount
+      self.save!
+    end
   end
 
   def balance
@@ -44,7 +52,6 @@ class Account < ApplicationRecord
     ActiveRecord::Base.transaction do
       self.withdraw(amount)
       Account.find(account_id).deposit(amount)
-      self.touch
     end
   end
 end
