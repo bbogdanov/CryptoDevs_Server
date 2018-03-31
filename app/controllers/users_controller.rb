@@ -52,10 +52,11 @@ class UsersController < ApplicationController
     if user.nil?
       render json: { status: 404, msg: "User not found!"}
     else
-      account_sender = Account.where(user_id: current_user.id).where(currency_code: params[:currency_code]).first
-      account_recipient = Account.where(user_id: user.id).where(currency_code: params[:currency_code]).first
-      account_sender.transfer_to(account_recipient.id, params[:amount])
-      render json: account_sender.balance
+      currency_code = params[:currency_code].upcase
+      account_sender = Account.where(user_id: current_user.id).where(currency_code: currency_code.upcase).first
+      account_recipient = Account.where(user_id: user.id).where(currency_code: currency_code.upcase).first
+      account_sender.transfer_to(account_recipient.id, BigDecimal.new(params[:amount]))
+      render json: { currency_code.upcase => account_sender.balance }
     end
   end
   
