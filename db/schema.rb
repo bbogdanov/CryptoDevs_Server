@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180401062444) do
+ActiveRecord::Schema.define(version: 20180401074028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,15 @@ ActiveRecord::Schema.define(version: 20180401062444) do
     t.integer "lock_version", default: 0, null: false
     t.string "address"
     t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "address_pools", force: :cascade do |t|
+    t.string "address"
+    t.decimal "amount", precision: 30, scale: 18, default: "0.0", null: false
+    t.string "transaction_hash"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pending_withdrawals", force: :cascade do |t|
