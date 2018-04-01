@@ -67,13 +67,29 @@ class UsersController < ApplicationController
     render json: response.reduce(Hash.new, :merge)
   end
 
+  def withdraw
+    ActiveRecord::Base.transaction do
+      pending_withdrawal = PendingWithdrawal.new
+      pending_withdrawal.address = params[:address]
+      pending_withdrawal.status = 'pending'
+      pending_withdrawal.amount = BigDecimal.new(params[:amount])
+      pending_withdrawal.currency_code = params[:currency_code].upcase
+      account = Account.where(user_id: current_user.id).where(currency_code: params[:currency_code].upcase).first
+      account.withdraw(BigDecimal.new(params[:amount]))
+      pending_withdrawal.account = account
+      pending_withdrawal.save!
+    end
+
+    render json: { status: 200 }
+  end
+
   private
   
   # Setting up strict parameters for when we add account creation.
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation)
   end
-  
+
   # Adding a method to check if current_user can update itself. 
   # This uses our UserModel method.
   def authorize
