@@ -18,4 +18,6 @@ Rails.application.routes.draw do
 
   get '/users/balance', to: 'users#balance'
   post '/users/transfer', to: 'users#transfer'
+  # post '/users/withdraw', to: 'users#withdraw'
+  get '/users/deposit', to: 'users#deposit'
 end

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # Use Knock to make sure the current_user is authenticated before completing request.
-  before_action :authenticate_user,  only: [:index, :current, :update, :balance]
+  before_action :authenticate_user,  only: [:index, :current, :update, :balance, :transfer, :deposit]
   before_action :authorize_as_admin, only: [:destroy]
   before_action :authorize,          only: [:update]
 
@@ -58,6 +58,13 @@ class UsersController < ApplicationController
       account_sender.transfer_to(account_recipient.id, BigDecimal.new(params[:amount]))
       render json: { status: 200, currency_code.upcase => account_sender.balance }
     end
+  end
+
+  def deposit
+    user = User.find(current_user.id)
+    response = user.accounts.map { |acc| { acc.currency_code => acc.address } }
+    
+    render json: response.reduce(Hash.new, :merge)
   end
 
   private
