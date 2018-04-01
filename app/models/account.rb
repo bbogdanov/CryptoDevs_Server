@@ -1,6 +1,7 @@
 class Account < ApplicationRecord
   belongs_to :user
   has_many :transactions
+  has_many :pending_withdrawals
 
   def self.create_btc_account(user)
     acc = Account.new
