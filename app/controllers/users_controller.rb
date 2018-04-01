@@ -56,10 +56,10 @@ class UsersController < ApplicationController
       account_sender = Account.where(user_id: current_user.id).where(currency_code: currency_code.upcase).first
       account_recipient = Account.where(user_id: user.id).where(currency_code: currency_code.upcase).first
       account_sender.transfer_to(account_recipient.id, BigDecimal.new(params[:amount]))
-      render json: { currency_code.upcase => account_sender.balance }
+      render json: { status: 200, currency_code.upcase => account_sender.balance }
     end
   end
-  
+
   private
   
   # Setting up strict parameters for when we add account creation.
