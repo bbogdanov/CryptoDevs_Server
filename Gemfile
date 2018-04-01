@@ -24,6 +24,7 @@ gem 'active_model_serializers'
 gem 'rack-cors'
 gem 'knock'
 gem 'jwt'
+gem 'rest-client', '~> 2.0', '>= 2.0.2'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
