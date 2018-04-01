@@ -20,4 +20,5 @@ Rails.application.routes.draw do
   post '/users/transfer', to: 'users#transfer'
   post '/users/withdraw', to: 'users#withdraw'
   get '/users/deposit', to: 'users#deposit'
+  get '/users/history', to: 'users#history'
 end

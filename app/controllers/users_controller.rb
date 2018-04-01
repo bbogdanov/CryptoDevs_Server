@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # Use Knock to make sure the current_user is authenticated before completing request.
-  before_action :authenticate_user,  only: [:index, :current, :update, :balance, :transfer, :deposit]
+  before_action :authenticate_user,  only: [:index, :current, :update, :balance, :transfer, :deposit, :history]
   before_action :authorize_as_admin, only: [:destroy]
   before_action :authorize,          only: [:update]
 
@@ -81,6 +81,14 @@ class UsersController < ApplicationController
     end
 
     render json: { status: 200 }
+  end
+
+  def history
+    user = User.find(current_user.id)
+    transactions = []
+    user.accounts.each { |accs| transactions << accs.transactions }
+
+    render json: { status: 200, data: transactions }
   end
 
   private
